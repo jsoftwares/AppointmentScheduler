@@ -4,8 +4,8 @@
 {
     <form id="logoutForm" method="post" asp-action="Logout" asp-controller="Account">
         <ul class="nav navbar-nav">
-            <li class="text-white">Hello @User.Identity.Name!</li>
-            <li class="nav-link text-white"> <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
+            <li class="nav-link text-white">Hello @User.Identity.Name!</li>
+            <li> <a class="nav-link text-white" href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
         </ul> 
     </form>
       

@@ -54,9 +54,13 @@ namespace AppointmentScheduler.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
             //}
 
-            return View();
+            return View(model);
         }
     }
 }
