@@ -2,7 +2,13 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<AppointmentScheduler.Models.ApplicationUser> SignInManager
 @if (SignInManager.IsSignedIn(User))
 {
-    
+    <form id="logoutForm" method="post" asp-action="Logout" asp-controller="Account">
+        <ul class="nav navbar-nav">
+            <li class="text-white">Hello @User.Identity.Name!</li>
+            <li class="nav-link text-white"> <a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
+        </ul> 
+    </form>
+      
 }
 else
 {
