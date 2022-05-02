@@ -64,7 +64,7 @@ namespace AppointmentScheduler.Controllers
                     Email = model.Email, 
                     Name = model.Name 
                 };
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, Helper.Admin);
@@ -78,6 +78,12 @@ namespace AppointmentScheduler.Controllers
             //}
 
             return View(model);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Account");
         }
     }
 }
