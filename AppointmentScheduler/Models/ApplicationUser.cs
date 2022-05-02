@@ -3,8 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AppointmentScheduler.Models
 {
-    [Required]
     public class ApplicationUser : IdentityUser
     {
+        [Required]
+        public string Name { get; set; }
     }
 }
