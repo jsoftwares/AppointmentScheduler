@@ -57,8 +57,8 @@ namespace AppointmentScheduler.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            //if (!ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 var user = new ApplicationUser { 
                     UserName = model.Email, 
                     Email = model.Email, 
@@ -75,7 +75,7 @@ namespace AppointmentScheduler.Controllers
                 {
                     ModelState.AddModelError("", error.Description);
                 }
-            //}
+            }
 
             return View(model);
         }
