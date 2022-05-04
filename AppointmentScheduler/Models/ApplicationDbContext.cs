@@ -7,7 +7,8 @@ namespace AppointmentScheduler.Models
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-               
         }
+
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }
