@@ -22,7 +22,7 @@ const intitializeCalendar = () => {
                 },
                 selectable: true,
                 editable: false,
-                select: function (event) {
+                select:  (event) => {
                     onShowModal(event, null);
                 },
                 eventDisplay: 'block',
@@ -56,6 +56,9 @@ const intitializeCalendar = () => {
                             $.notify("Error", "error");
                         }
                     });
+                },
+                eventClick: info => {
+                    getEventDetailsByAppintmentId(info.event);
                 }
             });
             calendar.render();
@@ -67,7 +70,16 @@ const intitializeCalendar = () => {
     }
 }
 
-const onShowModal = (obj, isEventDetail) => {
+const onShowModal = (obj, isEditEvent) => {
+    if (isEditEvent !== null) {
+        $('#id').val(obj.id);
+        $("#title").val(obj.title);
+        $('#description').val(obj.description);
+        $("#appointmentDate").val(obj.startDate);
+        $('#duration').val(obj.duration);
+        $('#patientId').val(obj.patientId);
+        $('#doctorId').val(obj.doctorId);
+    }
     $('#appointmentInput').modal('show');
 }
 
@@ -132,4 +144,21 @@ const checkValidation = () => {
     }
 
     return isValid;
+}
+
+const getEventDetailsByAppintmentId = info => {
+    $.ajax({
+        url: routeURL + '/api/Appointment/GetCalendarDataById/' + info.id,
+        type: 'GET',
+        dataType: "json",
+        success: response => {
+            if (response.status === 1 && response.dataenum !== undefined) {
+                onShowModal(respose.dataenum, true);
+            }
+            successCallback(events);
+        },
+        error: xhr => {
+            $.notify("Error", "error");
+        }
+    });
 }

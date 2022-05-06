@@ -94,5 +94,25 @@ namespace AppointmentScheduler.Controllers.Api
 
             return Ok(commonResponse);
         }
+
+        [HttpGet]
+        [Route("GetCalendarDataById/{Id}")]
+        public IActionResult GetCalendarDataById(int id)
+        {
+            CommonResponse<AppointmentVM> commonResponse = new CommonResponse<AppointmentVM>();
+            try
+            {             
+                commonResponse.dataenum = _appointmentService.GetById(id);
+                commonResponse.status = Helper.success_code;
+            }
+            catch (Exception e)
+            {
+
+                commonResponse.message = e.Message;
+                commonResponse.status = Helper.failure_code;
+            }
+
+            return Ok(commonResponse);
+        }
     }
 }

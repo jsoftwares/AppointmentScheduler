@@ -9,7 +9,7 @@ namespace AppointmentScheduler.Services
         public Task<int> AddUpdate(AppointmentVM model);    //returns an in, type of Task so we can implement d async verion
         public List<AppointmentVM> DoctorAppointmentsById(string doctorId);
         public List<AppointmentVM> PatientAppointmentsById(string patientId);
-        
+        public AppointmentVM GetById(int id);
 
     }
 }
