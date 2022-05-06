@@ -85,6 +85,14 @@ const onShowModal = (obj, isEditEvent) => {
         $('#duration').val(obj.duration);
         $('#patientId').val(obj.patientId);
         $('#doctorId').val(obj.doctorId);
+        $('#lblPatientName').val(obj.patientName);
+        $('#lblDoctortName').val(obj.doctorName);
+        if (obj.isDoctorApproved) {
+            $('#lblStatus').val('Approved');
+        }
+        else {
+            $('#lblStatus').val('Pending');
+        }
     }
     else {
         $("#appointmentDate").val(obj.startStr + ' ' + new moment().format("hh:mm:A"));
@@ -103,6 +111,8 @@ const onCloseModal = () => {
     $('#patientId').val('');
 
     $('#appointmentInput').modal('hide');
+    $("#title").removeClass('error');
+    $("#appointmentDate").removeClass('error');
 
 }
 
