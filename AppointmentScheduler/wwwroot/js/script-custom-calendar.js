@@ -9,11 +9,12 @@ $(document).ready(function () {
     });
 });
 
+let calendar;
 const intitializeCalendar = () => {
     try {
         var calendarEl = document.getElementById('calendar');
         if (calendarEl) {
-            var calendar = new FullCalendar.Calendar(calendarEl, {
+            calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 headerToolbar: {
                     left: 'prev,next,today',
@@ -162,3 +163,5 @@ const getEventDetailsByAppintmentId = info => {
         }
     });
 }
+
+const onDoctorChange = () => calendar.refetchEvents(); //fired when we change doctor in dropdown
