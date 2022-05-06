@@ -24,6 +24,38 @@ const intitializeCalendar = () => {
                 editable: false,
                 select: function (event) {
                     onShowModal(event, null);
+                },
+                eventDisplay: 'block',
+                events: (fetchInfo, successCallback, failureCallback) => {
+                    $.ajax({
+                        url: routeURL + '/api/Appointment/GetCalendarData?doctorId=' + $('#doctorId').val(),
+                        type: 'GET',
+                        dataType: "json",
+                        success: response => {
+                            const events = [];
+                            if (response.status === 1) {
+                                $.each(response.dataenum, (i, data) => {
+                                    events.push(
+                                        {
+                                            title: data.title,
+                                            description: data.description,
+                                            start: data.startDate,
+                                            end: data.EndDate,
+                                            id: data.id,
+                                            backgroundColor: data.isDoctorApproved ? '#28a745' : '#dc3545',
+                                            borderColor: '#162466',
+                                            textColor: 'white'
+                                        }
+                                    );
+                                });
+                                
+                            }
+                            successCallback(events);
+                        },
+                        error: xhr => {
+                            $.notify("Error", "error");
+                        }
+                    });
                 }
             });
             calendar.render();
@@ -58,7 +90,7 @@ const onSubmitForm = () => {
         }
 
         $.ajax({
-            url: routeURL + "/api/Appointment/SaveCalendarData",
+            url: routeURL + '/api/Appointment/SaveCalendarData',
             type: 'POST',
             data: requestData,
             success: response => {
