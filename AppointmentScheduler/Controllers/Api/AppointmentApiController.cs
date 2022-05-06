@@ -56,5 +56,43 @@ namespace AppointmentScheduler.Controllers.Api
             }
             return Ok(commonResponse);
         }
+
+        [HttpGet]
+        [Route("GetCalendarData")]
+        public IActionResult GetCalendarData(string doctorId)
+        {
+            CommonResponse<List<AppointmentVM>> commonResponse = new CommonResponse<List<AppointmentVM>>();
+            try
+            {
+                /**Based on the role of the logged in user, we need to call different methods; if the role of the logged in
+                 * user is Patient, then we need to retrieve all of that patient appointments so we can display that, if it's
+                 * a Doctor then we need to call DoctorAppointmentById instead. If it's an Admin, we'll call d DoctorAppointmentById
+                */
+                if (role == Helper.Patient)
+                {
+                    commonResponse.dataenum = _appointmentService.PatientAppointmentsById(loginUserId);
+                    commonResponse.status = Helper.success_code;
+                }
+                else if (role == Helper.Doctor)
+                {
+                    commonResponse.dataenum = _appointmentService.DoctorAppointmentsById(loginUserId);
+                    commonResponse.status = Helper.success_code;
+                }
+                else
+                {
+                    // if user is Admin, we retrieve appointments based on d doctor d Admin selects. 
+                    commonResponse.dataenum = _appointmentService.DoctorAppointmentsById(doctorId);
+                    commonResponse.status = Helper.success_code;
+                }
+            }
+            catch (Exception e)
+            {
+
+                commonResponse.message = e.Message;
+                commonResponse.status = Helper.failure_code;
+            }
+
+            return Ok(commonResponse);
+        }
     }
 }
