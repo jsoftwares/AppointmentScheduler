@@ -10,7 +10,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")) );
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddTransient<IAppointmentService, AppointmentService>();
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor();  //helps to get current user data (eg ID, role etc)
 
 var app = builder.Build();
 
