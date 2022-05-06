@@ -55,6 +55,26 @@ namespace AppointmentScheduler.Services
             
         }
 
+        /**We get all d appointments where the DoctorId equals d doctorId passed as argument, we then convert d result to a List,
+         * then we user projecttions (Select) since we want to return a List of AppointmentVMs; for every element on the returned
+         * List of filtered appointments from DB, we create a new object of type AppointmentVM. If we do not do this then return
+         type will be the Appointment model but we need to convert from this to AppointmentVM 
+        */
+        public List<AppointmentVM> DoctorAppointmentsById(string doctorId)
+        {
+            return _db.Appointments.Where(x => x.DoctorId == doctorId).ToList().Select(c => new AppointmentVM()
+            {
+                Id = c.Id,
+                DoctorId = c.DoctorId,
+                Title = c.Title,
+                Description = c.Description,
+                Duration = c.Duration,
+                StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                IsDoctorApproved=c.IsDoctorApproved
+            }).ToList();
+        }
+
         public List<DoctorVM> GetDoctorsList()
         {
             var doctors = (from user in _db.Users
@@ -73,6 +93,21 @@ namespace AppointmentScheduler.Services
                            select new PatientVM { Id = user.Id, Name = user.Name }
                            ).ToList();
             return patients;
+        }
+
+        public List<AppointmentVM> PatientAppointmentsById(string patientId)
+        {
+            return _db.Appointments.Where(x => x.PatientId == patientId).ToList().Select(c => new AppointmentVM()
+            {
+                Id = c.Id,
+                DoctorId = c.DoctorId,
+                Title = c.Title,
+                Description = c.Description,
+                Duration = c.Duration,
+                StartDate = c.StartDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndDate = c.EndDate.ToString("yyyy-MM-dd HH:mm:ss"),
+                IsDoctorApproved = c.IsDoctorApproved
+            }).ToList();
         }
     }
 }
