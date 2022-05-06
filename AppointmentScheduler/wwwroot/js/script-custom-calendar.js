@@ -72,6 +72,11 @@ const intitializeCalendar = () => {
 }
 
 const onShowModal = (obj, isEditEvent) => {
+    /**During Edit we pass our data we fetch from API when an aAppointment in FullCalendar is clicked (select), but when a date
+     * is click to add a new Appointment, we pass d 'event' from SELECT to onShowModal; this event object contains the date
+     * that was clicked as a property name 'startStr'. We can use this to get the date that was clicked so we can display that
+     * on our Create modal instead of displaying the current date. startStr gives date without time.
+     */
     if (isEditEvent !== null) {
         $('#id').val(obj.id);
         $("#title").val(obj.title);
@@ -81,10 +86,22 @@ const onShowModal = (obj, isEditEvent) => {
         $('#patientId').val(obj.patientId);
         $('#doctorId').val(obj.doctorId);
     }
+    else {
+        $("#appointmentDate").val(obj.startStr + ' ' + new moment().format("hh:mm:A"));
+        $('#id').val(0);
+    }
     $('#appointmentInput').modal('show');
 }
 
 const onCloseModal = () => {
+    $('#appointmentForm')[0].reset();
+    $('#id').val(0);
+    $("#title").val('');
+    $('#description').val('');
+    $("#appointmentDate").val('');
+    $('#duration').val('');
+    $('#patientId').val('');
+
     $('#appointmentInput').modal('hide');
 
 }
@@ -110,6 +127,7 @@ const onSubmitForm = () => {
                 if (response.status === 1 || response.status === 2) {
                     $.notify(response.message, "success");
                     onCloseModal();
+                    calendar.refetchEvents();
                 }
                 else {
                     console.log(response);
