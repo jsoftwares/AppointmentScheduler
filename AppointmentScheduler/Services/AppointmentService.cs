@@ -1,12 +1,14 @@
 ﻿using AppointmentScheduler.Models;
 using AppointmentScheduler.Models.ViewModels;
 using AppointmentScheduler.Utility;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace AppointmentScheduler.Services
 {
     public class AppointmentService : IAppointmentService
     {
         private readonly ApplicationDbContext _db;
+        private readonly IEmailSender _emailSender;
 
         public AppointmentService(ApplicationDbContext db)
         {
@@ -17,10 +19,30 @@ namespace AppointmentScheduler.Services
         {
             var startDate = DateTime.Parse(model.StartDate);
             var endDate = DateTime.Parse(model.StartDate).AddMinutes(Convert.ToDouble(model.Duration));
+            var patient = _db.Users.FirstOrDefault( u => u.Id == model.PatientId);
+            var doctor = _db.Users.FirstOrDefault( u => u.Id == model.DoctorId);
 
             if (model !=null && model.Id > 0)
             {
                 //Update
+                var appointment = _db.Appointments.FirstOrDefault(x => x.Id == model.Id);
+                if (appointment == null)
+                {
+                    return 0;
+                }
+
+                appointment.Title = model.Title;
+                appointment.Description = model.Description;
+                appointment.StartDate = startDate;
+                appointment.EndDate = endDate;
+                appointment.Duration = model.Duration;
+                appointment.DoctorId = model.DoctorId;
+                appointment.PatientId = model.PatientId;
+                appointment.IsDoctorApproved = false;
+                appointment.AdminId = model.AdminId;
+                
+                await _db.SaveChangesAsync();
+
                 return 1;
             }
             else
@@ -40,7 +62,10 @@ namespace AppointmentScheduler.Services
                 };
                 _db.Appointments.Add(appointment);
                 await _db.SaveChangesAsync();
-                
+                await _emailSender.SendEmailAsync(patient.Email,$"{model.Title} Appointment Created",
+                    $"<h4>Dear {patient.Name},</h4><p>Your appointment with ${doctor.Name} has been created and pending status.</p><p>Thank you</p><p><strong>Appointment Scheduler Admin.</strong></p>");
+                await _emailSender.SendEmailAsync(doctor.Email, $"{model.Title} Appointment Created", 
+                    $"<h4>Dear {doctor.Name},</h4><p>Your appointment with ${patient.Name} has been created and waiting your confirmation.</p><p>Thank you</p><p><strong>Appointment Scheduler Admin.</strong></p>");
                 return 2;
             }
             
