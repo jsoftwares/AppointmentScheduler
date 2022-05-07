@@ -68,8 +68,16 @@ namespace AppointmentScheduler.Controllers
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, model.RoleName);
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    //we only want to login a user on successful registration if it's not an admin account.
+                    if (!User.IsInRole(Helper.Admin))
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                    }
+                    else
+                    {
+                        TempData["newAdminCreated"] = user.Name;
+                    }
+                    return RedirectToAction("Index", "Appointment");
                 }
                 foreach(var error in result.Errors)
                 {
