@@ -11,5 +11,8 @@ namespace AppointmentScheduler.Services
         public List<AppointmentVM> PatientAppointmentsById(string patientId);
         public AppointmentVM GetById(int id);
 
+        public Task<int> Delete(int id);
+        public Task<int> ConfirmAppointment(int id);
+
     }
 }

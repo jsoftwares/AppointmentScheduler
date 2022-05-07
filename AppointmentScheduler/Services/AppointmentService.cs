@@ -28,15 +28,6 @@ namespace AppointmentScheduler.Services
                 //Create
                 Appointment appointment = new Appointment()
                 {
-                    //Title = model.Title,
-                    //Description = model.Description,
-                    //StartDate = startDate,
-                    //EndDate = endDate,
-                    //Duration = model.Duration,
-                    //DoctorId = model.DoctorId,
-                    //PatientId = model.PatientId,
-                    //AdminId = model.AdminId,
-                    //isDoctorApproved = false
                     Title = model.Title,
                     Description = model.Description,
                     StartDate = startDate,
@@ -53,6 +44,28 @@ namespace AppointmentScheduler.Services
                 return 2;
             }
             
+        }
+
+        public async Task<int> ConfirmAppointment(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(x => x.Id == id);
+            if (appointment != null)
+            {
+                appointment.IsDoctorApproved = true;
+                return await _db.SaveChangesAsync();    //returns the number of record updated
+            }
+            return 0;
+        }
+
+        public async Task<int> Delete(int id)
+        {
+            var appointment = _db.Appointments.FirstOrDefault(x => x.Id == id);
+            if (appointment != null)
+            {
+                _db.Appointments.Remove(appointment);
+                return await _db.SaveChangesAsync();
+            }
+            return 0;
         }
 
         /**We get all d appointments where the DoctorId equals d doctorId passed as argument, we then convert d result to a List,
