@@ -19,22 +19,26 @@ namespace AppointmentScheduler.Controllers
             _signInManager = signInManager;
             _roleManager = roleManager;
         }
-        public IActionResult Login()
+        public IActionResult Login(string returnurl=null)
         {
+            ViewData["ReturnUrl"] = returnurl;  //used insdie of Login.cshtml & POST Login to redirect d user to d page they tried to visit while not logged In
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string returnurl=null)
         {
+            ViewData["ReturnUrl"] = returnurl;
+            returnurl = returnurl ?? Url.Content("~/"); //?? if returnurl is null, set it to home page
             if (ModelState.IsValid)
             {
                 // attempts to sign in the user & returns d result of this Sign in action
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure:false);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Appointment");
+                    return LocalRedirect(returnurl);    //localredirect protects our app from attacks by ensuring to stop a redirect if it is external from our apps urls
+                    //return RedirectToAction("Index", "Appointment");
                 }
                 ModelState.AddModelError("", "Invalid login attempt");
             }
@@ -82,6 +86,7 @@ namespace AppointmentScheduler.Controllers
                 foreach(var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
+                    //in place of "" we can also use string.Empty()
                 }
             }
 

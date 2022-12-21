@@ -1,3 +1,4 @@
+using AppointmentScheduler.DbInitializer;
 using AppointmentScheduler.Models;
 using AppointmentScheduler.Services;
 using AppointmentScheduler.Utility;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddTransient<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddHttpContextAccessor();  //helps to get current user data (eg ID, role etc)
 
 var app = builder.Build();
