@@ -34,11 +34,15 @@ namespace AppointmentScheduler.Controllers
             if (ModelState.IsValid)
             {
                 // attempts to sign in the user & returns d result of this Sign in action
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure:false);
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure:true);
                 if (result.Succeeded)
                 {
                     return LocalRedirect(returnurl);    //localredirect protects our app from attacks by ensuring to stop a redirect if it is external from our apps urls
                     //return RedirectToAction("Index", "Appointment");
+                }
+                if (result.IsLockedOut)
+                {
+                    return View("Logout");
                 }
                 ModelState.AddModelError("", "Invalid login attempt");
             }
